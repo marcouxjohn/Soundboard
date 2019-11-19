@@ -56,6 +56,9 @@ def thread_sound(sound, stream, chunk_size):
     print("DONE")
     return True
 
+################################################
+#TESTING DATA BELOW
+################################################
 my_player = SoundPlayer(1024)
 my_player.play_sound("file_example_WAV_1MG.wav")
 time.sleep(1)
