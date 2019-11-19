@@ -1,5 +1,5 @@
 separate:
-    ffmpeg
+    ffmpeg (not yet but probably)
 python:
     pyaudio
     pydub
