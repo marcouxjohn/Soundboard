@@ -4,9 +4,11 @@
 # VERSION:  1.0
 # PURPOSE:  Main source for front end to interact via
 
+import time
 import glob
 import os
 import sys
+from shutil import copyfile
 import soundplayer
 import fileFunctions
 
@@ -46,8 +48,18 @@ class BackEnd:
         if not sound_name in self.sound_names:
             return False
         try:
-            self.sound_names.remove(sound_names)
+            self.sound_names.remove(sound_name)
             os.remove(self.dirsep.join([self.doc_root, "sounds", sound_name]))
             return True
         except:
             return False
+
+if __name__ == "__main__":
+    back = BackEnd()
+    print(back.add_sound("../file_example_WAV_1MG.wav"))
+    print(back.play_sound("file_example_WAV_1MG.wav"))
+    print(back.add_sound("oaushaouwdoauwnf"))
+    print(back.rem_sound("file_example_WAV_1MG.wav"))
+    print(back.rem_sound("file_example_WAV_1MG.wav"))
+    print(back.play_sound("file_example_WAV_1MG.wav"))
+    time.sleep(10)
