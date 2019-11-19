@@ -23,7 +23,7 @@ class SoundPlayer:
         try:
             data = wave.open(sound_name, 'rb')
         except:
-            return None
+            return (None,None)
         try:
             stream = self.py_audio.open(
                 format=self.py_audio.get_format_from_width(
@@ -33,12 +33,15 @@ class SoundPlayer:
                 output=True)
         except:
             data.close()
-            return None
+            return (None,None)
         return data, stream
 
     def play_sound(self, sound_name):
         sound, stream = self.get_sound(sound_name)
+        if sound is None and stream is None:
+            return False
         _thread.start_new_thread(thread_sound, (sound, stream, self.chunk_size))
+        return True
 
     def destroy(self):
         self.py_audio.terminate()
@@ -56,75 +59,13 @@ def thread_sound(sound, stream, chunk_size):
     print("DONE")
     return True
 
-################################################
-#TESTING DATA BELOW
-################################################
-my_player = SoundPlayer(1024)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-time.sleep(1)
-my_player.play_sound("file_example_WAV_1MG.wav")
-for i in range(35):
-    print(i)
-    time.sleep(1)
-my_player.destroy()
-del my_player
+if __name__ == "__main__":
+    my_player = SoundPlayer(1024)
+    for _ in range(10):
+        my_player.play_sound("file_example_WAV_1MG.wav")
+        time.sleep(1)
+    for i in range(35):
+        print(i)
+        time.sleep(1)
+    my_player.destroy()
+    del my_player

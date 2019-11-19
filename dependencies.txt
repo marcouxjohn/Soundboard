@@ -1,0 +1,7 @@
+separate:
+    ffmpeg
+python:
+    pyaudio
+    pydub
+    django
+    
