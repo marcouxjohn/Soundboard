@@ -7,6 +7,7 @@
 
 import sys
 import tkinter as tk
+import json
 from tkinter import filedialog
 import os
 from shutil import copyfile
@@ -46,3 +47,34 @@ def import_sound(soundPath):
     copyfile(soundPath, "sounds/" + path + ext)
 
     return 0
+
+# Saves a sound config with given settings in configData
+# configData[0] = sound name
+# configData[1] = volume
+def save_sound_config(configData):
+    data = {}
+    data["content"] = []
+    data["content"].append({
+        "soundname": configData[0],
+        "volume": configData[1]
+    })
+
+    with open("configs/" + configData[0] + ".json", 'w') as outfile:
+        json.dump(data, outfile)
+
+# Returns the config data for a specified sound
+# returnData[0] = sound name
+# returnData[1] = volume
+def load_sound_config(soundName):
+    returnData = [None]*2
+
+    # Open JSON
+    with open("configs/" + soundName + ".json") as config_file:
+        data = json.load(config_file)
+        # Loop through file to find the correct sound
+        for sound in data['content']:
+            if sound["soundname"] == soundName:
+                returnData[0] = sound["soundname"]
+                returnData[1] = sound["volume"]
+
+    return returnData
