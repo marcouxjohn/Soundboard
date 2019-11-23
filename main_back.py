@@ -11,8 +11,11 @@ import glob
 import os
 import sys
 from shutil import copyfile
+import pygame
 import soundplayer
 import fileFunctions
+import config
+
 
 """
 Name:       BackEnd
@@ -33,10 +36,10 @@ class BackEnd:
     Bugs:       None
     """
 
-    def __init__(self, chunk_size=1024):
-        self.sound_player = soundplayer.SoundPlayer(chunk_size)
+    def __init__(self):
         self.doc_root = os.getcwd()
         fileFunctions.create_directories()
+        self.key_config = config.KeyConfig()
         if sys.platform == 'win32':
             self.dirsep = '\\'
         else:
@@ -56,11 +59,11 @@ class BackEnd:
     Assumptions:None
     Bugs:       None
     """
-    
+
     def play_sound(self, sound_name):
         if not sound_name in self.sound_names:
             return False
-        return self.sound_player.play_sound(sound_name)
+        return soundplayer.play_sound(sound_name)
 
     """
     Name:       add_sound
@@ -76,16 +79,16 @@ class BackEnd:
     def add_sound(self, path_to_new_sound):
         try:
             filename = path_to_new_sound.split(self.dirsep)[-1]
-            
+
             # Make sure file isn't a dup, if it is make sure it's obvious
-            
+
             if filename in self.sound_names:
                 filename = filename.split('.')
                 filename[0] += "(dup)"
                 filename = '.'.join(filename)
             if not filename.split('.')[-1] in ["mp3", "wav"]:
                 return False
-            copyfile(path_to_new_sound, self.dirsep.join([self.doc_root,
+            x = copyfile(path_to_new_sound, self.dirsep.join([self.doc_root,
                                                           "sounds", filename]))
             self.sound_names.append(filename)
             return True
@@ -113,12 +116,35 @@ class BackEnd:
         except:
             return False
 
+    def add_key_bind(self, key, sound):
+        if sound in self.sound_names:
+            return self.key_config.add_key_bind(key, sound)
+        return False
+
+    def rem_key_bind(self, key):
+        return self.key_config.rem_key_bind(key)
+
 if __name__ == "__main__":
     back = BackEnd()
-    print(back.add_sound("../file_example_WAV_1MG.wav"))
+    print(back.add_sound("file_example_WAV_1MG.wav"))
     print(back.play_sound("file_example_WAV_1MG.wav"))
     print(back.add_sound("oaushaouwdoauwnf"))
     print(back.rem_sound("file_example_WAV_1MG.wav"))
     print(back.rem_sound("file_example_WAV_1MG.wav"))
     print(back.play_sound("file_example_WAV_1MG.wav"))
+    print(back.add_sound("file_example_WAV_1MG.wav"))
+    pygame.display.set_mode((100,100))
+    pygame.init()
+    back.add_key_bind(pygame.K_a, "file_example_WAV_1MG.wav")
+    back.add_key_bind(pygame.K_b, "file_example_WAV_1MG.wav")
+    z = 0
+    while True:
+        if z > 4:
+            break
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key in back.key_config.key_binds:
+                    back.play_sound(back.key_config.key_binds[event.key])
+                    z += 1
+
     time.sleep(10)
