@@ -1,7 +1,7 @@
 # FILE:     fileFunctions.py
 # AUTHOR:   David LeBlanc 143807L@acadiau.ca
-# DATE:     2019/11/17
-# VERSION:  1.1
+# DATE:     2019/11/22
+# VERSION:  1.2
 # PURPOSE:  This program defines functions for use in managing the files needed
 # for the Chadatonic.
 
@@ -48,25 +48,59 @@ def import_sound(soundPath):
 
     return 0
 
-# Saves a sound config with given settings in configData
-# configData[0] = sound name
-# configData[1] = volume
-def save_sound_config(configData):
+# Saves a sound config with given settings in configData for given configName
+# configData[0]:    Sound name
+# configData[1]:    Volume
+# configData[2]:    Amplitude
+# configData[3]:    Whether to loop (True) or not (False)
+# configData[4]:    How many times to loop, if enabled
+# configData[5]:    Whether or not the filter is enabled
+# configName:       The name of the config in use (folder)
+def save_sound_config(configData, configName):
+    # If config folder does not exist, error
+    if not os.path.exists("configs"):
+        return -1
+
+    # Determine config path
+    configFolder = "configs/" + configName
+    configPath = configFolder + "/" + configData[0] + ".json"
+
+    # Create config content
     data = {}
     data["content"] = []
     data["content"].append({
-        "soundname": configData[0],
-        "volume": configData[1]
+        "soundname":    configData[0],
+        "volume":       configData[1],
+        "amplitude":    configData[2],
+        "loopOn":       configData[3],
+        "loopCount":    configData[4],
+        "filter":       configData[5]
     })
 
-    with open("configs/" + configData[0] + ".json", 'w') as outfile:
+    # Create config if it doesn't exist
+    if not os.path.exists(configFolder):
+        os.mkdir(configFolder)
+
+    with open(configPath, 'w') as outfile:
         json.dump(data, outfile)
 
-# Returns the config data for a specified sound
-# returnData[0] = sound name
-# returnData[1] = volume
-def load_sound_config(soundName):
+    return 1
+
+# Returns the config data for a specified sound, or -1 on failure
+# returnData[0]: sound name
+# returnData[1]: volume
+# returnData[2]: amplitude
+# returnData[3]: Whether to loop (true) or not (false)
+# returnData[4]: How many times to loop, if enabled
+# returnData[5]: Whether or not the filter is enabled
+def load_sound_config(soundName, configName):
     returnData = [None]*2
+
+    # Determine  config path
+    configPath = "configs/" + configName + "/" + soundName + ".json"
+
+    if not os.path.exists(configPath):
+        return -1
 
     # Open JSON
     with open("configs/" + soundName + ".json") as config_file:
@@ -76,5 +110,9 @@ def load_sound_config(soundName):
             if sound["soundname"] == soundName:
                 returnData[0] = sound["soundname"]
                 returnData[1] = sound["volume"]
+                returnData[2] = sound["amplitude"]
+                returnData[3] = sound["loopOn"]
+                returnData[4] = sound["loopCount"]
+                returnData[5] = sound["Filter"]
 
     return returnData
