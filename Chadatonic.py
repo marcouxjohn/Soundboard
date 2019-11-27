@@ -184,6 +184,7 @@ def main():
                         if event.button == 3:
                             ConfigLoop = False
                             EditLoop = True
+                            editInit = False
                             currentSound = playButtons.index(button)
                         windowBGColor = white
 
@@ -191,12 +192,14 @@ def main():
             # Edit screen loop
             if EditLoop:
 
-                # Load config for current sound
-                nowName = "Airplane"
-                nowConfig = "Config1"
+                if (not editInit):
+                    # Load config for current sound
+                    nowName = "Airplane"
+                    nowConfig = "Config1"
+                    configData = load_sound_config(nowName, nowConfig)
+                    editInit = True
 
-                
-
+                # Get current config settings
 
 
                 bg = EditBg
@@ -208,9 +211,15 @@ def main():
                     sys.exit()
 
                 # MenuButton click events
+
+
+                # Saving the sound
                 if 'click' in overwrite.handleEvent(event):
                     windowBgColor = white
+                    save_sound_config(configData, nowConfig)
 
+
+                # Getting rid of this
                 if 'click' in saveNew.handleEvent(event):
                     windowBgColor = white
 
@@ -225,29 +234,51 @@ def main():
                     EditLoop = False
 
                 # EditButton click events
+
+
+                # Volume Control
+                # -10
                 if 'click' in v0.handleEvent(event):
                     windowBgColor = white
+                    configData[1] = configData[1] - 10
+                # - 5
                 if 'click' in v1.handleEvent(event):
                     windowBgColor = white
+                    configData[1] = configData[1] - 5
+                # 5
                 if 'click' in v2.handleEvent(event):
                     windowBgColor = white
+                    configData[1] = configData[1] + 5
+                # 10
                 if 'click' in v3.handleEvent(event):
                     windowBgColor = white
+                    configData[1] = configData[1] + 10
 
+                # -10
                 if 'click' in amp0.handleEvent(event):
                     windowBgColor = white
+                    configData[2] = configData[2] - 10
+                # -5
                 if 'click' in amp1.handleEvent(event):
                     windowBgColor = white
+                    configData[2] = configData[2] - 5
+                # 5
                 if 'click' in amp2.handleEvent(event):
                     windowBgColor = white
+                    configData[2] = configData[2] + 5
+                # 10
                 if 'click' in amp3.handleEvent(event):
                     windowBgColor = white
+                    configData[2] = configData[2] + 10
 
+                # Loop
                 if 'click' in loopb.handleEvent(event):
                     windowBgColor = white
+                    configData[3] = not configData[3]
 
                 if 'click' in filb.handleEvent(event):
                     windowBgColor = white
+                    configData[5] = not configData[5]
 
                 if 'click' in conb.handleEvent(event):
                     windowBgColor = white

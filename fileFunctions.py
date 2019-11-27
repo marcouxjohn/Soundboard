@@ -55,6 +55,7 @@ def import_sound(soundPath):
 # configData[3]:    Whether to loop (True) or not (False)
 # configData[4]:    How many times to loop, if enabled
 # configData[5]:    Whether or not the filter is enabled
+# configData[6]:    
 # configName:       The name of the config in use (folder)
 def save_sound_config(configData, configName):
     # If config folder does not exist, error
@@ -93,6 +94,7 @@ def save_sound_config(configData, configName):
 # returnData[3]: Whether to loop (true) or not (false)
 # returnData[4]: How many times to loop, if enabled
 # returnData[5]: Whether or not the filter is enabled
+# returnData[6]: config key
 def load_sound_config(soundName, configName):
     returnData = [None]*2
 
