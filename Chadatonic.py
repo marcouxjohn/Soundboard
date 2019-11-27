@@ -1,11 +1,29 @@
+# FILE:     Chadatonic.py
+# AUTHOR:   Margaret Perry
+# DATE:     2019/11/22
+# VERSION:  1.3
+# PURPOSE:  User Interface for Chadatonic
+
 import sys, os
+
 sys.path.insert(0, os.path.abspath('..'))
 
-import pygame, pygbutton
-from Elements import Background
-from Elements import Slider
-
+import pygame
 from pygame.locals import *
+import pygbutton
+import main_back
+from Elements import Background
+
+"""
+Name:        main
+Purpose:     Generates soundboard UI
+Arguments:   None
+Output:      None
+Modifies:    None
+Returns:     Game window
+Assumptions: None
+Bugs:        None
+"""
 
 def main():
 
@@ -47,6 +65,7 @@ def main():
     col5 = 550
     col6 = 660
 
+    # Colours for buttons and background
     dark = (84,20,20)
     orange = (244,160,49)
     blue = (88, 194, 127)
@@ -54,10 +73,15 @@ def main():
 
     windowBgColor = white
 
+    # initalizing frames and window
     fps_clock = pygame.time.Clock()
     gameDisplay = pygame.display.set_mode((d_width,d_height))
+
+    # Initalize backgrounds
     ConfigBg= Background('bg.png', [0,0])
     EditBg = Background('edit.png', [0,0])
+
+    # Makes window title
     pygame.display.set_caption('Chadatonic V1.0')
 
     # Menu buttons
@@ -107,35 +131,50 @@ def main():
     b25 = pygbutton.PygButton((col6, row5, wp, hp), '5', bgcolor=orange, fgcolor=dark)
 
     # Buttons for editing sounds
+    # Volume buttons
+    volume = pygbutton.PygButton((col2, row1, wm, hm), 'Volume', bgcolor=orange, fgcolor=dark)
+    v0 = pygbutton.PygButton((col3+20, row1, wp, hp), '- 10', bgcolor=blue, fgcolor=dark)
+    v1 = pygbutton.PygButton((col4+20, row1, wp, hp), '- 5', bgcolor=blue, fgcolor=dark)
+    v2 = pygbutton.PygButton((col5+20, row1, wp, hp), '+ 5', bgcolor=blue, fgcolor=dark)
+    v3 = pygbutton.PygButton((col6+20, row1, wp, hp), '+ 10', bgcolor=blue, fgcolor=dark)
+
+    # Amplitude buttons
+    amp = pygbutton.PygButton((col2, row2, wm, hm), 'Amplitude', bgcolor=orange, fgcolor=dark)
+    amp0 = pygbutton.PygButton((col3+20, row2, wp, hp), '- 10', bgcolor=blue, fgcolor=dark)
+    amp1 = pygbutton.PygButton((col4+20, row2, wp, hp), '- 5', bgcolor=blue, fgcolor=dark)
+    amp2 = pygbutton.PygButton((col5+20, row2, wp, hp), '+ 5', bgcolor=blue, fgcolor=dark)
+    amp3 = pygbutton.PygButton((col6+20, row2, wp, hp), '+ 10', bgcolor=blue, fgcolor=dark)
+
+
+
     loopb = pygbutton.PygButton((col2, row3, wm, hm), 'Loop', bgcolor=blue, fgcolor=dark)
     filb = pygbutton.PygButton((col5, row3, wm, hm), 'Filter', bgcolor=blue, fgcolor=dark)
-    conb = pygbutton.PygButton((col2, row4, wm, hm), 'Concatinate', bgcolor=blue, fgcolor=dark)
+    conb = pygbutton.PygButton((col2, row4, wm, hm), 'Concatenate', bgcolor=blue, fgcolor=dark)
     layb = pygbutton.PygButton((col5, row4, wm, hm), 'Layer', bgcolor=blue, fgcolor=dark)
 
-    vol = Slider("Volume", 0, 20, -20, col2)
-    amp = Slider("Amplitude", 0, 20, -20, col5)
-
+    # Buttons used for playing sounds
     playButtons = (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14,
                    b15, b16, b17, b18, b19, b20, b21, b22, b23, b24, b25)
 
-    changeButtons = (loopb, filb, conb, layb)
+    # Buttons used for editing
+    changeButtons = (volume, v0, v1, v2, v3, amp, amp0, amp1, amp2, amp3, loopb, filb, conb, layb)
 
-    changeSlider = (vol, amp)
-
-
+    # All congiguration buttons
     ConfigButtons = menu1Buttons + playButtons
 
+    # All edit buttons
     EditButtons = menu2Buttons + changeButtons
 
-    while MainLoop: # main game loop
+    # main game loop
+    while MainLoop:
 
         for event in pygame.event.get(): # event handling loop
 
+            # Congiguration screen loop
             if ConfigLoop:
 
                 bg = ConfigBg
                 buttons = ConfigButtons
-                #sliders = False
 
                 # Quit event
                 if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -306,11 +345,11 @@ def main():
                         EditLoop = True
                     windowBgColor = white
 
+            # Edit screen loop
             if EditLoop:
 
                 bg = EditBg
                 buttons = EditButtons
-                #sliders = True
 
                 # Quit event
                 if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -334,15 +373,24 @@ def main():
                     ConfigLoop = True
                     EditLoop = False
 
-                # EditButton and EditSlider click events
-            #    if event.type == pygame.MOUSEBUTTONDOWN:
-            #       pos = pygame.mouse.get_pos()
-            #       for s in changeSlider:
-            #           if s.button_rect.collidepoint(pos):
-            #              s.hit = True
-            #    elif event.type == pygame.MOUSEBUTTONUP:
-            #        for s in changeSlider:
-            #            s.hit = False
+                # EditButton click events
+                if 'click' in v0.handleEvent(event):
+                    windowBgColor = white
+                if 'click' in v1.handleEvent(event):
+                    windowBgColor = white
+                if 'click' in v2.handleEvent(event):
+                    windowBgColor = white
+                if 'click' in v3.handleEvent(event):
+                    windowBgColor = white
+
+                if 'click' in amp0.handleEvent(event):
+                    windowBgColor = white
+                if 'click' in amp1.handleEvent(event):
+                    windowBgColor = white
+                if 'click' in amp2.handleEvent(event):
+                    windowBgColor = white
+                if 'click' in amp3.handleEvent(event):
+                    windowBgColor = white
 
                 if 'click' in loopb.handleEvent(event):
                     windowBgColor = white
@@ -359,11 +407,14 @@ def main():
         # Display elements in window
         gameDisplay.fill(windowBgColor)
 
+        # Display background
         gameDisplay.blit(bg.image, bg.rect)
 
+        # Display all buttons
         for b in buttons:
             b.draw(gameDisplay)
 
+        # Updates screen
         pygame.display.flip()
         fps_clock.tick(fps)
 
