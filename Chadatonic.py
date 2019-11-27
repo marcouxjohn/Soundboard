@@ -11,7 +11,9 @@ sys.path.insert(0, os.path.abspath('..'))
 import pygame
 from pygame.locals import *
 import pygbutton
-import main_back
+from main_back import *
+from fileFunctions import *
+from soundplayer import *
 from Elements import Background
 
 """
@@ -26,6 +28,8 @@ Bugs:        None
 """
 
 def main():
+
+    back = BackEnd()
 
     pygame.init()
 
@@ -94,41 +98,20 @@ def main():
     back = pygbutton.PygButton((col1, row5, wm, hm), 'Back', bgcolor=orange, fgcolor=dark)
 
     # Config window menu buttons
-    menu1Buttons = (overwrite, saveNew, load, delete)
+    menu1Buttons = [overwrite, saveNew, load, delete]
 
     # Edit window menu buttons
-    menu2Buttons = (overwrite, saveNew, bind, choose, back)
+    menu2Buttons = [overwrite, saveNew, bind, choose, back]
 
     # Buttons for playing sounds
-    b1 = pygbutton.PygButton((col2, row1, wp, hp), 'c 1', bgcolor=orange, fgcolor=dark)
-    b2 = pygbutton.PygButton((col2, row2, wp, hp), '2', bgcolor=orange, fgcolor=dark)
-    b3 = pygbutton.PygButton((col2, row3, wp, hp), '3', bgcolor=orange, fgcolor=dark)
-    b4 = pygbutton.PygButton((col2, row4, wp, hp), '4', bgcolor=orange, fgcolor=dark)
-    b5 = pygbutton.PygButton((col2, row5, wp, hp), '5', bgcolor=orange, fgcolor=dark)
+    playButtons = []
 
-    b6 = pygbutton.PygButton((col3, row1, wp, hp), 'c 2', bgcolor=orange, fgcolor=dark)
-    b7 = pygbutton.PygButton((col3, row2, wp, hp), '2', bgcolor=orange, fgcolor=dark)
-    b8 = pygbutton.PygButton((col3, row3, wp, hp), '3', bgcolor=orange, fgcolor=dark)
-    b9 = pygbutton.PygButton((col3, row4, wp, hp), '4', bgcolor=orange, fgcolor=dark)
-    b10 = pygbutton.PygButton((col3, row5, wp, hp), '5', bgcolor=orange, fgcolor=dark)
+    for column in range(0,5):
+        for rows in range(0,5):
+            playButtons.append(pygbutton.PygButton((column*110 + 220, rows*90 + 50, wp, hp), 'c 1', bgcolor=orange, fgcolor=dark))
+            
 
-    b11 = pygbutton.PygButton((col4, row1, wp, hp), 'c 3', bgcolor=orange, fgcolor=dark)
-    b12 = pygbutton.PygButton((col4, row2, wp, hp), '2', bgcolor=orange, fgcolor=dark)
-    b13 = pygbutton.PygButton((col4, row3, wp, hp), '3', bgcolor=orange, fgcolor=dark)
-    b14 = pygbutton.PygButton((col4, row4, wp, hp), '4', bgcolor=orange, fgcolor=dark)
-    b15 = pygbutton.PygButton((col4, row5, wp, hp), '5', bgcolor=orange, fgcolor=dark)
 
-    b16 = pygbutton.PygButton((col5, row1, wp, hp), 'c 4', bgcolor=orange, fgcolor=dark)
-    b17 = pygbutton.PygButton((col5, row2, wp, hp), '2', bgcolor=orange, fgcolor=dark)
-    b18 = pygbutton.PygButton((col5, row3, wp, hp), '3', bgcolor=orange, fgcolor=dark)
-    b19 = pygbutton.PygButton((col5, row4, wp, hp), '4', bgcolor=orange, fgcolor=dark)
-    b20 = pygbutton.PygButton((col5, row5, wp, hp), '5', bgcolor=orange, fgcolor=dark)
-
-    b21 = pygbutton.PygButton((col6, row1, wp, hp), 'c 5', bgcolor=orange, fgcolor=dark)
-    b22 = pygbutton.PygButton((col6, row2, wp, hp), '2', bgcolor=orange, fgcolor=dark)
-    b23 = pygbutton.PygButton((col6, row3, wp, hp), '3', bgcolor=orange, fgcolor=dark)
-    b24 = pygbutton.PygButton((col6, row4, wp, hp), '4', bgcolor=orange, fgcolor=dark)
-    b25 = pygbutton.PygButton((col6, row5, wp, hp), '5', bgcolor=orange, fgcolor=dark)
 
     # Buttons for editing sounds
     # Volume buttons
@@ -153,11 +136,11 @@ def main():
     layb = pygbutton.PygButton((col5, row4, wm, hm), 'Layer', bgcolor=blue, fgcolor=dark)
 
     # Buttons used for playing sounds
-    playButtons = (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14,
-                   b15, b16, b17, b18, b19, b20, b21, b22, b23, b24, b25)
+    #playButtons = (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14,
+    #               b15, b16, b17, b18, b19, b20, b21, b22, b23, b24, b25)
 
     # Buttons used for editing
-    changeButtons = (volume, v0, v1, v2, v3, amp, amp0, amp1, amp2, amp3, loopb, filb, conb, layb)
+    changeButtons = [volume, v0, v1, v2, v3, amp, amp0, amp1, amp2, amp3, loopb, filb, conb, layb]
 
     # All congiguration buttons
     ConfigButtons = menu1Buttons + playButtons
@@ -167,6 +150,7 @@ def main():
 
     # main game loop
     while MainLoop:
+
 
         for event in pygame.event.get(): # event handling loop
 
@@ -195,158 +179,25 @@ def main():
                     windowBgColor = white
 
                 # PlayButton click events
-                if 'click' in b1.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
+                for button in playButtons:
+                    if 'click' in button.handleEvent(event):
+                        if event.button == 3:
+                            ConfigLoop = False
+                            EditLoop = True
+                            currentSound = playButtons.index(button)
+                        windowBGColor = white
 
-                if 'click' in b2.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b3.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b4.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b5.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b6.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b7.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b8.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b9.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b10.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b11.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b12.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b13.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b14.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b15.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b16.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b17.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b18.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b19.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b20.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b21.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b22.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b23.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b24.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
-
-                if 'click' in b25.handleEvent(event):
-                    if event.button == 3:
-                        ConfigLoop = False
-                        EditLoop = True
-                    windowBgColor = white
 
             # Edit screen loop
             if EditLoop:
+
+                # Load config for current sound
+                nowName = "Airplane"
+                nowConfig = "Config1"
+
+                
+
+
 
                 bg = EditBg
                 buttons = EditButtons
