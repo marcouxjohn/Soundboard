@@ -70,7 +70,7 @@ def concat(sound_name1, sound_name2, dirsep):
         sound1 = AudioSegment.from_wav("sounds" + dirsep + sound_name1)
         sound2 = AudioSegment.from_wav("sounds" + dirsep + sound_name2)
         sound1 = sound1 + sound2
-        sound1.export("sounds" + dirsep + sound_name, format="wav")
+        sound1.export("sounds" + dirsep + sound_name1, format="wav")
         return True
     except:
         return False
@@ -78,6 +78,7 @@ def concat(sound_name1, sound_name2, dirsep):
 # Applies any effects given by the config list
 
 def apply_effects(sound_name, effects):
+    #print(effects)
     if effects[1] != 0:
         change_by_NDB(sound_name, effects[1], "/")
     if effects[2] != 0:
@@ -85,5 +86,6 @@ def apply_effects(sound_name, effects):
     if effects[3]:
         loop_n(sound_name, effects[4] + 1, "/")
     if effects[5]:
+        #print("Concating")
         concat(sound_name, effects[6], "/")
 
