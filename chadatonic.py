@@ -2,9 +2,8 @@
 # AUTHOR:   Margaret Perry
 # DATE:     2019/11/22
 # VERSION:  1.3
-# PURPOSE:  User Interface and functonality for Chadatonic
+# PURPOSE:  User Interface for Chadatonic
 
-#imports
 import sys, os
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -19,26 +18,29 @@ from Elements import Background
 import random
 import mod_sound
 
-# Global var for the current sound bein edited
-current_sound = "none"
-
 """
 Name:        main
-Purpose:     Generates soundboard wwindow and buttons
+Purpose:     Generates soundboard UI
 Arguments:   None
 Output:      None
 Modifies:    None
 Returns:     Game window
+Assumptions: None
+Bugs:        None
 """
+
+current_sound = "none"
 
 def main():
     pygame.init()
     back_end = BackEnd()
 
+    # Import sound
+    #print(back_end.add_sound('sounds/Piano.wav'))
+
     # Frame rate
     fps = 30
 
-    # Screen loops defined
     MainLoop = True
     ConfigLoop = True
     EditLoop = False
@@ -104,14 +106,14 @@ def main():
     # Edit window menu buttons
     menu2Buttons = [overwrite,cancel, back]
 
-    # Create list of sounds in sounds library
+    #sounds = [0]*24
     sounds = []
+
     for sound in back_end.sound_names:
         sound = sounds.append(sound)
 
-    # Creates list array of buttons and creates buttons for playing sounds
+    # Buttons for playing sounds
     playButtons = []
-    # Used for determining name of the sound assigned to a given button
     temp = 0
 
     for column in range(0,5):
@@ -127,7 +129,7 @@ def main():
     v2 = pygbutton.PygButton((col5+20, row1, wp, hp), '+ 5', bgcolor=blue, fgcolor=dark)
     v3 = pygbutton.PygButton((col6+20, row1, wp, hp), '+ 10', bgcolor=blue, fgcolor=dark)
 
-    # Bass buttons
+    # Amplitude buttons
     amp = pygbutton.PygButton((col2, row2, wm, hm), 'Bass', bgcolor=orange, fgcolor=dark)
     amp0 = pygbutton.PygButton((col3+20, row2, wp, hp), '- 10', bgcolor=blue, fgcolor=dark)
     amp1 = pygbutton.PygButton((col4+20, row2, wp, hp), '- 5', bgcolor=blue, fgcolor=dark)
@@ -149,7 +151,7 @@ def main():
     # Stops stacking of config modifications
     n_effects = [None, 0, 0, False, 0, False, 0]
 
-    # Main game loop
+    # main game loop
     while MainLoop:
 
         for event in pygame.event.get(): # event handling loop
@@ -157,7 +159,6 @@ def main():
             # Congiguration screen loop
             if ConfigLoop:
 
-                # Change buttons and background
                 bg = ConfigBg
                 buttons = ConfigButtons
 
@@ -167,7 +168,6 @@ def main():
                     sys.exit()
 
                 # MenuButton click events
-                # Functionality to be added in Chadatonic 2.0
                 if 'click' in overwrite.handleEvent(event):
                     windowBgColor = white
 
@@ -180,30 +180,28 @@ def main():
                 # PlayButton click events
                 for button in playButtons:
                     if 'click' in button.handleEvent(event):
-                        # Right click takes you to the edit page for the given sound
                         if event.button == 3:
                             current_sound = sounds[playButtons.index(button)]
                             ConfigLoop = False
                             EditLoop = True
                             editInit = False
                             currentSound = playButtons.index(button)
-                        # Left click will play a sound
                         if sounds[playButtons.index(button)]:
                             back_end.play_sound(sounds[playButtons.index(button)])
-                        # else for if no sound is assigned to a button
                         else:
                             print("nice")
+
+# second array of string names
 
             # Edit screen loop
             if EditLoop:
 
-                # Load config for current sound
                 if (not editInit):
+                    # Load config for current sound
                     nowConfig = current_sound
                     config_data = load_sound_config(current_sound, nowConfig)
                     editInit = True
 
-                # Change buttons and background
                 bg = EditBg
                 buttons = EditButtons
 
@@ -213,19 +211,16 @@ def main():
                     sys.exit()
 
                 # MenuButton click events
-                # Go back to config screen
                 if 'click' in back.handleEvent(event):
                     ConfigLoop = True
                     EditLoop = False
 
-                # Save edits to sound file
                 if 'click' in overwrite.handleEvent(event):
                     save_sound_config(config_data, config_data[0])
                     # Make sound effects happen here
                     mod_sound.apply_effects(config_data[0], n_effects)
                     n_effects = [None, 0, 0, False, 0, False, 0]
 
-                # Cancel edits to sound file
                 if 'click' in cancel.handleEvent(event):
                     n_effects = [None, 0, 0, False, 0, False, 0]
 
@@ -251,7 +246,6 @@ def main():
                         config_data[1] = config_data[1] + 10
                         n_effects[1] = n_effects[1] + 10
 
-                # Bass Control
                 # -10
                 if 'click' in amp0.handleEvent(event):
                     if config_data != -1:
@@ -273,19 +267,18 @@ def main():
                         config_data[2] = config_data[2] + 10
                         n_effects[2] = n_effects[2] + 10
 
-                # Loop button 
+                # Loop
                 if 'click' in loopb.handleEvent(event):
                     config_data[3] = True
                     config_data[4] = config_data[4] + 1
                     n_effects[3] = True
                     n_effects[4] = n_effects[4] + 1
 
-                # Concatenate button
                 if 'click' in conb.handleEvent(event):
                     config_data[5] = True
                     config_data[6] = sounds[random.randint(0,24)]
                     n_effects[5] = True
-                    n_effects[6] = sounds[random.randint(0,24)]
+                    n_effects[6] = config_data[6]
 
         # Display elements in window
         gameDisplay.fill(windowBgColor)
