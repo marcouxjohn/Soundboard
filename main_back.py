@@ -44,11 +44,22 @@ class BackEnd:
             self.dirsep = '\\'
         else:
             self.dirsep = '/'
+        print(self.doc_root)
         self.sound_names = glob.glob(self.doc_root + self.dirsep + "sounds" +
-                                     self.dirsep + "*.[mp3|wav]")
+                                     self.dirsep + "*.wav")
+        self.sound_names += glob.glob(self.doc_root + self.dirsep + "sounds" +
+                             self.dirsep + "*.mp3")
+
         for i in range(len(self.sound_names)):
             self.sound_names[i] = self.sound_names[i].split(self.dirsep)[-1]
-    
+
+            if not os.path.exists(self.doc_root + self.dirsep +"configs"+ self.dirsep + self.sound_names[i]):
+                config_data = [0]*8
+                config_data[3] = False
+                config_data[5] = False
+                config_data[0] = self.sound_names[i]
+                fileFunctions.save_sound_config(config_data, config_data[0])
+
     """
     Name:       play_sound
     Purpose:    Plays a sound via the SoundPlayer object
@@ -63,7 +74,8 @@ class BackEnd:
     def play_sound(self, sound_name):
         if not sound_name in self.sound_names:
             return False
-        return soundplayer.play_sound(sound_name)
+        #print("got here")
+        return soundplayer.play_sound(sound_name, self.dirsep)
 
     """
     Name:       add_sound

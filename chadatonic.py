@@ -15,6 +15,7 @@ from main_back import *
 from fileFunctions import *
 from soundplayer import *
 from Elements import Background
+import random
 
 """
 Name:        main
@@ -27,13 +28,14 @@ Assumptions: None
 Bugs:        None
 """
 
+current_sound = "none"
+
 def main():
     pygame.init()
     back_end = BackEnd()
 
     # Import sound
     #print(back_end.add_sound('sounds/Piano.wav'))
-
 
     # Frame rate
     fps = 30
@@ -93,8 +95,6 @@ def main():
     # Menu buttons
     overwrite = pygbutton.PygButton((col1, row1, wm, hm), 'Overwrite', bgcolor=orange, fgcolor=dark)
     load = pygbutton.PygButton((col1, row2, wm, hm), 'Load', bgcolor=orange, fgcolor=dark)
-    addSound = pygbutton.PygButton((col1, row3, wm, hm), 'AddSound', bgcolor=orange, fgcolor=dark)
-    choose = pygbutton.PygButton((col1, row4, wm, hm), 'ChooseSound', bgcolor=orange, fgcolor=dark)
     delete = pygbutton.PygButton((col1, row5, wm, hm), 'Delete', bgcolor=orange, fgcolor=dark)
     back = pygbutton.PygButton((col1, row5, wm, hm), 'Back', bgcolor=orange, fgcolor=dark)
 
@@ -102,7 +102,7 @@ def main():
     menu1Buttons = [overwrite, load, delete]
 
     # Edit window menu buttons
-    menu2Buttons = [overwrite, addSound, choose, back]
+    menu2Buttons = [overwrite, back]
 
     # Buttons for playing sounds
     playButtons = []
@@ -110,6 +110,12 @@ def main():
     for column in range(0,5):
         for rows in range(0,5):
             playButtons.append(pygbutton.PygButton((column*110 + 220, rows*90 + 50, wp, hp), 'Play', bgcolor=orange, fgcolor=dark))
+
+    #sounds = [0]*24
+    sounds = []
+
+    for sound in back_end.sound_names:
+        sound = sounds.append(sound)
 
     # Buttons for editing sounds
     # Volume buttons
@@ -120,21 +126,17 @@ def main():
     v3 = pygbutton.PygButton((col6+20, row1, wp, hp), '+ 10', bgcolor=blue, fgcolor=dark)
 
     # Amplitude buttons
-    amp = pygbutton.PygButton((col2, row2, wm, hm), 'Amplitude', bgcolor=orange, fgcolor=dark)
+    amp = pygbutton.PygButton((col2, row2, wm, hm), 'Bass', bgcolor=orange, fgcolor=dark)
     amp0 = pygbutton.PygButton((col3+20, row2, wp, hp), '- 10', bgcolor=blue, fgcolor=dark)
     amp1 = pygbutton.PygButton((col4+20, row2, wp, hp), '- 5', bgcolor=blue, fgcolor=dark)
     amp2 = pygbutton.PygButton((col5+20, row2, wp, hp), '+ 5', bgcolor=blue, fgcolor=dark)
     amp3 = pygbutton.PygButton((col6+20, row2, wp, hp), '+ 10', bgcolor=blue, fgcolor=dark)
 
-
-
     loopb = pygbutton.PygButton((col2, row3, wm, hm), 'Loop', bgcolor=blue, fgcolor=dark)
-    filb = pygbutton.PygButton((col5, row3, wm, hm), 'Filter', bgcolor=blue, fgcolor=dark)
     conb = pygbutton.PygButton((col2, row4, wm, hm), 'Concatenate', bgcolor=blue, fgcolor=dark)
-    layb = pygbutton.PygButton((col5, row4, wm, hm), 'Layer', bgcolor=blue, fgcolor=dark)
 
     # Buttons used for editing
-    changeButtons = [volume, v0, v1, v2, v3, amp, amp0, amp1, amp2, amp3, loopb, filb, conb, layb]
+    changeButtons = [volume, v0, v1, v2, v3, amp, amp0, amp1, amp2, amp3, loopb, conb]
 
     # All congiguration buttons
     ConfigButtons = menu1Buttons + playButtons
@@ -172,28 +174,26 @@ def main():
                 for button in playButtons:
                     if 'click' in button.handleEvent(event):
                         if event.button == 3:
+                            current_sound = sounds[playButtons.index(button)]
                             ConfigLoop = False
                             EditLoop = True
+                            editInit = False
                             currentSound = playButtons.index(button)
-                        back_end.play_sound("Piano.wav")
+                        if sounds[playButtons.index(button)]:
+                            back_end.play_sound(sounds[playButtons.index(button)])
+                        else:
+                            print("nice")
 
+# second array of string names
 
             # Edit screen loop
             if EditLoop:
 
                 if (not editInit):
                     # Load config for current sound
-                    nowName = "Airplane"
-                    nowConfig = "Config1"
-                    configData = load_sound_config(nowName, nowConfig)
+                    nowConfig = current_sound
+                    config_data = load_sound_config(current_sound, nowConfig)
                     editInit = True
-
-                # Get current config settings
-
-
-                # Load config for current sound
-                nowName = "Airplane"
-                nowConfig = "Config1"
 
                 bg = EditBg
                 buttons = EditButtons
@@ -204,68 +204,56 @@ def main():
                     sys.exit()
 
                 # MenuButton click events
-                if 'click' in overwrite.handleEvent(event):
-                    windowBgColor = white
-
-                if 'click' in addSound.handleEvent(event):
-                    windowBgColor = white
-
-                if 'click' in choose.handleEvent(event):
-                    windowBgColor = white
-
                 if 'click' in back.handleEvent(event):
                     ConfigLoop = True
                     EditLoop = False
 
+                if 'click' in overwrite.handleEvent(event):
+                    save_sound_config(config_data,config_data[0])
+
                 # Volume Control
                 # -10
                 if 'click' in v0.handleEvent(event):
-                    windowBgColor = white
-                    configData[1] = configData[1] - 10
+                    if config_data != -1:
+                        config_data[1] = config_data[1] - 10
                 # - 5
                 if 'click' in v1.handleEvent(event):
-                    windowBgColor = white
-                    configData[1] = configData[1] - 5
+                    if config_data != -1:
+                       config_data[1] = config_data[1] - 5
                 # 5
                 if 'click' in v2.handleEvent(event):
-                    windowBgColor = white
-                    configData[1] = configData[1] + 5
+                    if config_data != -1:
+                        config_data[1] = config_data[1] + 5
                 # 10
                 if 'click' in v3.handleEvent(event):
-                    windowBgColor = white
-                    configData[1] = configData[1] + 10
+                    if config_data != -1:
+                        config_data[1] = config_data[1] + 10
 
                 # -10
                 if 'click' in amp0.handleEvent(event):
-                    windowBgColor = white
-                    configData[2] = configData[2] - 10
+                    if config_data != -1:
+                        config_data[2] = config_data[2] - 10
                 # -5
                 if 'click' in amp1.handleEvent(event):
-                    windowBgColor = white
-                    configData[2] = configData[2] - 5
+                    if config_data != -1:
+                        config_data[2] = config_data[2] - 5
                 # 5
                 if 'click' in amp2.handleEvent(event):
-                    windowBgColor = white
-                    configData[2] = configData[2] + 5
+                    if config_data != -1:
+                        config_data[2] = config_data[2] + 5
                 # 10
                 if 'click' in amp3.handleEvent(event):
-                    windowBgColor = white
-                    configData[2] = configData[2] + 10
+                    if config_data != -1:
+                        config_data[2] = config_data[2] + 10
 
                 # Loop
                 if 'click' in loopb.handleEvent(event):
-                    windowBgColor = white
-                    configData[3] = not configData[3]
-
-                if 'click' in filb.handleEvent(event):
-                    windowBgColor = white
-                    configData[5] = not configData[5]
+                    config_data[3] = not config_data[3]
+                    config_data[4] = config_data[4] + 1
 
                 if 'click' in conb.handleEvent(event):
-                    windowBgColor = white
-
-                if 'click' in layb.handleEvent(event):
-                    windowBgColor = white
+                    config_data[5] = not config_data[4]
+                    config_data[6] = sounds[random.randint(0,24)]
 
         # Display elements in window
         gameDisplay.fill(windowBgColor)
