@@ -15,7 +15,7 @@ import pygame
 import soundplayer
 import fileFunctions
 import config
-
+import pydub
 
 """
 Name:       BackEnd
@@ -47,13 +47,23 @@ class BackEnd:
         print(self.doc_root)
         self.sound_names = glob.glob(self.doc_root + self.dirsep + "sounds" +
                                      self.dirsep + "*.wav")
-        self.sound_names += glob.glob(self.doc_root + self.dirsep + "sounds" +
+        mp3_names = glob.glob(self.doc_root + self.dirsep + "sounds" +
                              self.dirsep + "*.mp3")
-
+        for name in mp3_names:
+            try:
+                n_sound = pydub.AudioSegment.from_mp3(name)
+                n_name = name.split(".")[:-1]
+                n_name.append("wav")
+                n_name = ".".join(n_name)
+                if not n_name in self.sound_names:
+                    n_sound.export(n_name, format="wav")
+                    self.sound_names.append(n_name)
+            except:
+                print("Bad sound:",name)
         for i in range(len(self.sound_names)):
             self.sound_names[i] = self.sound_names[i].split(self.dirsep)[-1]
 
-            if not os.path.exists(self.doc_root + self.dirsep +"configs"+ self.dirsep + self.sound_names[i]):
+            if not os.path.exists(self.doc_root + self.dirsep + "configs" + self.dirsep + self.sound_names[i]):
                 config_data = [0]*8
                 config_data[3] = False
                 config_data[5] = False
@@ -135,28 +145,3 @@ class BackEnd:
 
     def rem_key_bind(self, key):
         return self.key_config.rem_key_bind(key)
-
-if __name__ == "__main__":
-    back = BackEnd()
-    print(back.add_sound("file_example_WAV_1MG.wav"))
-    print(back.play_sound("file_example_WAV_1MG.wav"))
-    print(back.add_sound("oaushaouwdoauwnf"))
-    print(back.rem_sound("file_example_WAV_1MG.wav"))
-    print(back.rem_sound("file_example_WAV_1MG.wav"))
-    print(back.play_sound("file_example_WAV_1MG.wav"))
-    print(back.add_sound("file_example_WAV_1MG.wav"))
-    pygame.display.set_mode((100,100))
-    pygame.init()
-    back.add_key_bind(pygame.K_a, "file_example_WAV_1MG.wav")
-    back.add_key_bind(pygame.K_b, "file_example_WAV_1MG.wav")
-    z = 0
-    while True:
-        if z > 4:
-            break
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key in back.key_config.key_binds:
-                    back.play_sound(back.key_config.key_binds[event.key])
-                    z += 1
-
-    time.sleep(10)
