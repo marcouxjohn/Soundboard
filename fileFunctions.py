@@ -51,11 +51,11 @@ def import_sound(soundPath):
 # Saves a sound config with given settings in configData for given configName
 # configData[0]:    Sound name
 # configData[1]:    Volume
-# configData[2]:    Amplitude
+# configData[2]:    Bass
 # configData[3]:    Whether to loop (True) or not (False)
 # configData[4]:    How many times to loop, if enabled
-# configData[5]:    Whether or not the filter is enabled
-# configData[6]:    
+# configData[5]:    Whether the file is concatenated (True) or not (False)
+# configData[6]:    sound name to concatenate
 # configName:       The name of the config in use (folder)
 def save_sound_config(configData, configName):
     # If config folder does not exist, error
@@ -72,10 +72,11 @@ def save_sound_config(configData, configName):
     data["content"].append({
         "soundname":    configData[0],
         "volume":       configData[1],
-        "amplitude":    configData[2],
+        "bass":         configData[2],
         "loopOn":       configData[3],
         "loopCount":    configData[4],
-        "filter":       configData[5]
+        "concatenate":  configData[5],
+        "meme sound":   configData[6]
     })
 
     # Create config if it doesn't exist
@@ -93,8 +94,9 @@ def save_sound_config(configData, configName):
 # returnData[2]: amplitude
 # returnData[3]: Whether to loop (true) or not (false)
 # returnData[4]: How many times to loop, if enabled
-# returnData[5]: Whether or not the filter is enabled
-# returnData[6]: config key
+# returnData[5]: Whether or not concatenate is enabled
+# returnData[6]: random sound to concatenate
+# configName:       The name of the config in use (folder)
 def load_sound_config(soundName, configName):
     returnData = [None]*2
 
@@ -105,16 +107,18 @@ def load_sound_config(soundName, configName):
         return -1
 
     # Open JSON
-    with open("configs/" + soundName + ".json") as config_file:
+    with open("configs/" + soundName +"/"+ soundName + ".json") as config_file:
         data = json.load(config_file)
+
+        returnData = [0]*7
         # Loop through file to find the correct sound
         for sound in data['content']:
             if sound["soundname"] == soundName:
                 returnData[0] = sound["soundname"]
                 returnData[1] = sound["volume"]
-                returnData[2] = sound["amplitude"]
+                returnData[2] = sound["bass"]
                 returnData[3] = sound["loopOn"]
                 returnData[4] = sound["loopCount"]
-                returnData[5] = sound["Filter"]
-
+                returnData[5] = sound["concatenate"]
+                returnData[6] = sound["meme sound"]
     return returnData

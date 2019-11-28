@@ -27,9 +27,9 @@ Assumptions:None
 Bugs:       None
 """
 
-def play_sound(sound_name):
-    if os.path.exists(sound_name):
-        _thread.start_new_thread(thread_sound, (sound_name, None))
+def play_sound(sound_name, dirsep):
+    if os.path.exists("sounds" + dirsep + sound_name):
+        _thread.start_new_thread(thread_sound, (sound_name, dirsep))
         return True
     return False
 
@@ -44,8 +44,8 @@ Assumptions:None
 Bugs:       None
 """
 
-def thread_sound(file_name, crap):
-    wave_obj = sa.WaveObject.from_wave_file(file_name)
+def thread_sound(file_name, dirsep):
+    wave_obj = sa.WaveObject.from_wave_file("sounds" + dirsep + file_name)
     play_obj = wave_obj.play()
     play_obj.wait_done()
 
