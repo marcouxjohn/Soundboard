@@ -218,6 +218,7 @@ def main():
                 if 'click' in overwrite.handleEvent(event):
                     save_sound_config(config_data, config_data[0])
                     # Make sound effects happen here
+                    #print(n_effects)
                     mod_sound.apply_effects(config_data[0], n_effects)
                     n_effects = [None, 0, 0, False, 0, False, 0]
 
