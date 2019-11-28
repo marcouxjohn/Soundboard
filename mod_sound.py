@@ -5,6 +5,7 @@
 # PURPOSE:  Sound modification lib
 
 import sys
+import os
 import sox
 from pydub import AudioSegment
 
@@ -47,7 +48,9 @@ def BASS(sound_name, n, dirsep):
     try:
         transformer = sox.Transformer()
         transformer.bass(n)
-        transformer.build("sounds" + dirsep + sound_name, "sounds" + dirsep + x + sound_name)
+        transformer.build("sounds" + dirsep + sound_name, "sounds" + dirsep + "tmp" + sound_name)
+        os.remove("sounds" + dirsep + sound_name)
+        os.rename("sounds" + dirsep + "tmp" + sound_name, "sounds" + dirsep + sound_name)
         return True
     except:
         return False
