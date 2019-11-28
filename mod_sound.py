@@ -9,7 +9,17 @@ import os
 import sox
 from pydub import AudioSegment
 
-# Changes sound volume by n decibels
+"""
+Name:       change_by_NDB
+Purpose:    Changes the volume of the given audio file by n decibels
+Arguments:  The name of the sound, the number of decibels and a redundant
+            directory separator
+Output:     None
+Modifies:   Changes the contents of the audio file on disk
+Returns:    True on success False on fail
+Assumptions:None
+Bugs:       None
+"""
 
 def change_by_NDB(sound_name, n, dirsep):
     try:
@@ -21,28 +31,36 @@ def change_by_NDB(sound_name, n, dirsep):
         return False
 
 # Not yet implemented functions, to be added in a future release
+#
+#def fade_out_nms(sound_name, n, dirsep):
+#    try:
+#        sound = AudioSegment.from_wav("sounds" + dirsep + sound_name)
+#        sound = sound.fade_out(n)
+#        sound.export("sounds" + dirsep + sound_name, format="wav")
+#        return True
+#    except:
+#        return False
+#
+#def fade_in_nms(sound_name, n, dirsep):
+#    try:
+#        sound = AudioSegment.from_wav("sounds" + dirsep + sound_name)
+#        sound = sound.fade_in(n)
+#        sound.export("sounds" + dirsep + sound_name, format="wav")
+#        return True
+#    except:
+#        return False
 
 """
-def fade_out_nms(sound_name, n, dirsep):
-    try:
-        sound = AudioSegment.from_wav("sounds" + dirsep + sound_name)
-        sound = sound.fade_out(n)
-        sound.export("sounds" + dirsep + sound_name, format="wav")
-        return True
-    except:
-        return False
-
-def fade_in_nms(sound_name, n, dirsep):
-    try:
-        sound = AudioSegment.from_wav("sounds" + dirsep + sound_name)
-        sound = sound.fade_in(n)
-        sound.export("sounds" + dirsep + sound_name, format="wav")
-        return True
-    except:
-        return False
+Name:       BASS
+Purpose:    Adds BASS
+Arguments:  The name of the sound file, the amount of bass, and a redundant 
+            directory separator
+Output:     None
+Modifies:   Changes the contents of the file on disk
+Returns:    True on success, False on fail
+Assumptions:None
+Bugs:       None
 """
-
-# Adds n units of BASS to the sound
 
 def BASS(sound_name, n, dirsep):
     try:
@@ -55,7 +73,17 @@ def BASS(sound_name, n, dirsep):
     except:
         return False
 
-# Make the song loop n more times
+"""
+Name:       loop_n
+Purpose:    Makes the song loop the given number of times
+Arguments:  The sound name, the number of times to loop, and a redundant 
+            directory separator
+Output:     None
+Modifies:   Changes the contents of the file on disk
+Returns:    True on sucees, False on fail
+Assumptions:None
+Bugs:       None
+"""
 
 def loop_n(sound_name, n, dirsep):
     try:
@@ -66,7 +94,17 @@ def loop_n(sound_name, n, dirsep):
     except:
         return False
 
-# Concatenates the second sound to the end of the first
+"""
+Name:       concat
+Purpose:    Takes the contents of the second sound and appends it to the first
+            sound on disk
+Arguments:  The names of the two sounds and a redundant directory separator
+Output:     None
+Modifies:   Changes the contents of the first sound on disk
+Returns:    True on success, False on fail
+Assumptions:None
+Bugs:       None
+"""
 
 def concat(sound_name1, sound_name2, dirsep):
     try:
@@ -78,7 +116,17 @@ def concat(sound_name1, sound_name2, dirsep):
     except:
         return False
 
-# Applies any effects given by the config list
+"""
+Name:       apply_effects
+Purpose:    Applies a set of effects based on the config data collected 
+            by chadatonic.py
+Arguments:  The sound name and the effects array
+Output:     None
+Modifies:   Changes the sound as specified by the functions above
+Returns:    None
+Assumptions:None
+Bugs:       None
+"""
 
 def apply_effects(sound_name, effects):
     #print(effects)
@@ -91,4 +139,3 @@ def apply_effects(sound_name, effects):
     if effects[5]:
         #print("Concating")
         concat(sound_name, effects[6], "/")
-
