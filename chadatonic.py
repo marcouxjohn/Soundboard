@@ -96,6 +96,7 @@ def main():
     # Menu buttons
     overwrite = pygbutton.PygButton((col1, row1, wm, hm), 'Overwrite', bgcolor=orange, fgcolor=dark)
     load = pygbutton.PygButton((col1, row2, wm, hm), 'Load', bgcolor=orange, fgcolor=dark)
+    cancel = pygbutton.PygButton((col1, row2, wm, hm), 'CancelChange', bgcolor=orange, fgcolor=dark)
     delete = pygbutton.PygButton((col1, row5, wm, hm), 'Delete', bgcolor=orange, fgcolor=dark)
     back = pygbutton.PygButton((col1, row5, wm, hm), 'Back', bgcolor=orange, fgcolor=dark)
 
@@ -103,20 +104,20 @@ def main():
     menu1Buttons = [overwrite, load, delete]
 
     # Edit window menu buttons
-    menu2Buttons = [overwrite, back]
-
-    # Buttons for playing sounds
-    playButtons = []
-
-    for column in range(0,5):
-        for rows in range(0,5):
-            playButtons.append(pygbutton.PygButton((column*110 + 220, rows*90 + 50, wp, hp), 'Play', bgcolor=orange, fgcolor=dark))
+    menu2Buttons = [overwrite,cancel, back]
 
     #sounds = [0]*24
     sounds = []
 
     for sound in back_end.sound_names:
         sound = sounds.append(sound)
+
+    # Buttons for playing sounds
+    playButtons = []
+
+    for column in range(0,5):
+        for rows in range(0,5):
+            playButtons.append(pygbutton.PygButton((column*110 + 220, rows*90 + 50, wp, hp), "Play", bgcolor=orange, fgcolor=dark))
 
     # Buttons for editing sounds
     # Volume buttons
@@ -217,7 +218,10 @@ def main():
                     # Make sound effects happen here
                     mod_sound.apply_effects(config_data[0], n_effects)
                     n_effects = [None, 0, 0, False, 0, False, 0]
-    
+
+                if 'click' in cancel.handleEvent(event):
+                    n_effects = [None, 0, 0, False, 0, False, 0]
+
                 # Volume Control
                 # -10
                 if 'click' in v0.handleEvent(event):
