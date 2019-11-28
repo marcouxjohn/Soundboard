@@ -16,6 +16,7 @@ from fileFunctions import *
 from soundplayer import *
 from Elements import Background
 import random
+import mod_sound
 
 """
 Name:        main
@@ -144,6 +145,9 @@ def main():
     # All edit buttons
     EditButtons = menu2Buttons + changeButtons
 
+    # Stops stacking of config modifications
+    n_effects = [None, 0, 0, False, 0, False, 0]
+
     # main game loop
     while MainLoop:
 
@@ -209,51 +213,66 @@ def main():
                     EditLoop = False
 
                 if 'click' in overwrite.handleEvent(event):
-                    save_sound_config(config_data,config_data[0])
-
+                    save_sound_config(config_data, config_data[0])
+                    # Make sound effects happen here
+                    mod_sound.apply_effects(config_data[0], n_effects)
+                    n_effects = [None, 0, 0, False, 0, False, 0]
+    
                 # Volume Control
                 # -10
                 if 'click' in v0.handleEvent(event):
                     if config_data != -1:
                         config_data[1] = config_data[1] - 10
+                        n_effects[1] = n_effects[1] - 10
                 # - 5
                 if 'click' in v1.handleEvent(event):
                     if config_data != -1:
                        config_data[1] = config_data[1] - 5
+                       n_effects[1] = n_effects[1] - 5
                 # 5
                 if 'click' in v2.handleEvent(event):
                     if config_data != -1:
                         config_data[1] = config_data[1] + 5
+                        n_effects[1] = n_effects[1] + 5
                 # 10
                 if 'click' in v3.handleEvent(event):
                     if config_data != -1:
                         config_data[1] = config_data[1] + 10
+                        n_effects[1] = n_effects[1] + 10
 
                 # -10
                 if 'click' in amp0.handleEvent(event):
                     if config_data != -1:
                         config_data[2] = config_data[2] - 10
+                        n_effects[2] = n_effects[2] - 10
                 # -5
                 if 'click' in amp1.handleEvent(event):
                     if config_data != -1:
                         config_data[2] = config_data[2] - 5
+                        n_effects[2] = n_effects[2] - 5
                 # 5
                 if 'click' in amp2.handleEvent(event):
                     if config_data != -1:
                         config_data[2] = config_data[2] + 5
+                        n_effects[2] = n_effects[2] + 5
                 # 10
                 if 'click' in amp3.handleEvent(event):
                     if config_data != -1:
                         config_data[2] = config_data[2] + 10
+                        n_effects[2] = n_effects[2] + 10
 
                 # Loop
                 if 'click' in loopb.handleEvent(event):
-                    config_data[3] = not config_data[3]
+                    config_data[3] = True
                     config_data[4] = config_data[4] + 1
+                    n_effects[3] = True
+                    n_effects[4] = n_effects[4] + 1
 
                 if 'click' in conb.handleEvent(event):
-                    config_data[5] = not config_data[4]
+                    config_data[5] = True
                     config_data[6] = sounds[random.randint(0,24)]
+                    n_effects[5] = True
+                    n_effects[6] = sounds[random.randint(0,24)]
 
         # Display elements in window
         gameDisplay.fill(windowBgColor)
