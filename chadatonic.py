@@ -116,8 +116,9 @@ def main():
 
     for column in range(0,5):
         for rows in range(0,5):
-            playButtons.append(pygbutton.PygButton((column*110 + 220, rows*90 + 50, wp, hp), sounds[temp], bgcolor=orange, fgcolor=dark, font=(pygame.font.Font('freesansbold.ttf', 10))))
-            temp = temp+1
+            if temp < len(sounds):
+                playButtons.append(pygbutton.PygButton((column*110 + 220, rows*90 + 50, wp, hp), sounds[temp], bgcolor=orange, fgcolor=dark, font=(pygame.font.Font('freesansbold.ttf', 10))))
+                temp = temp+1
 
     # Buttons for editing sounds
     # Volume buttons
