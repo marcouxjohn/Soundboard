@@ -1,7 +1,0 @@
-separate:
-    ffmpeg (not yet but probably)
-python:
-    pyaudio
-    pydub
-    django
-    
