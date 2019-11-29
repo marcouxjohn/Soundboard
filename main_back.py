@@ -44,7 +44,7 @@ class BackEnd:
             self.dirsep = '\\'
         else:
             self.dirsep = '/'
-        print(self.doc_root)
+        #print(self.doc_root)
         self.sound_names = glob.glob(self.doc_root + self.dirsep + "sounds" +
                                      self.dirsep + "*.wav")
         mp3_names = glob.glob(self.doc_root + self.dirsep + "sounds" +
